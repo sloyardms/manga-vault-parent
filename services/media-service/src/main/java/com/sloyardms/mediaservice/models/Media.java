@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,6 +25,9 @@ public class Media extends BaseAuditableEntity{
     @Id
     @Column(name = "id")
     private UUID id;
+
+    @Column(name = "main_title")
+    private String mainTitle;
 
     @Column(name = "summary")
     private String summary;
@@ -53,23 +57,23 @@ public class Media extends BaseAuditableEntity{
     @JoinColumn(name = "media_language_id")
     private MediaLanguage mediaLanguage;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<MediaTitle> mediaTitles;
+    @OneToMany(mappedBy = "media", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MediaAlternateTitle> mediaAlternateTitles = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "media_authors", joinColumns = @JoinColumn(name = "media_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private Set<MediaAuthor> mediaAuthors;
+    private Set<MediaAuthor> mediaAuthors = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "media_artists", joinColumns = @JoinColumn(name = "media_id"), inverseJoinColumns = @JoinColumn(name = "artist_id"))
-    private Set<MediaArtist> mediaArtists;
+    private Set<MediaArtist> mediaArtists = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "media_tags", joinColumns = @JoinColumn(name = "media_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private Set<MediaTag> mediaTags;
+    private Set<MediaTag> mediaTags = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "media_characters", joinColumns = @JoinColumn(name = "media_id"), inverseJoinColumns = @JoinColumn(name = "character_id"))
-    private Set<MediaCharacter> mediaCharacters;
+    private Set<MediaCharacter> mediaCharacters = new HashSet<>();
 
 }
