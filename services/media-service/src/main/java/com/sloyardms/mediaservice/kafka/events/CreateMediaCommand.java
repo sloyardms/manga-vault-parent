@@ -13,9 +13,9 @@ import java.util.UUID;
 
 /**
  * Represents the payload of a Kafka message used to request the creation of a new media item (e.g., a Webtoon)
- *
- * <p>This class is consumed by a Kafka listener and contains all necessary fields for creating a media entity,
- * such as titles, authors, tags, and metadata like language and type of media</p>
+ * <p>
+ * This message is produced by an automated system and consumed by the media-service. It triggers the creation of a Media,
+ * and it's not exposed via REST.
  */
 @Data
 @NoArgsConstructor

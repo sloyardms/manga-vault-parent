@@ -1,6 +1,6 @@
 package com.sloyardms.mediaservice.kafka;
 
-import com.sloyardms.mediaservice.errors.InvalidResourceVersionException;
+import com.sloyardms.mediaservice.exception.InvalidResourceVersionException;
 import com.sloyardms.mediaservice.kafka.events.CreateMediaCommand;
 import com.sloyardms.mediaservice.kafka.events.MediaCreatedEvent;
 import com.sloyardms.mediaservice.kafka.events.MediaCreationFailedEvent;

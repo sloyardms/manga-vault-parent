@@ -1,9 +1,9 @@
 package com.sloyardms.mediaservice.mapper;
 
-import com.sloyardms.mediaservice.dto.MediaDetailResponse;
-import com.sloyardms.mediaservice.dto.MediaSummaryResponse;
-import com.sloyardms.mediaservice.dto.UpdateMediaRequest;
-import com.sloyardms.mediaservice.models.Media;
+import com.sloyardms.mediaservice.dto.response.MediaDetailResponse;
+import com.sloyardms.mediaservice.dto.response.MediaSummaryResponse;
+import com.sloyardms.mediaservice.dto.request.UpdateMediaRequest;
+import com.sloyardms.mediaservice.entity.Media;
 import com.sloyardms.mediaservice.projection.MediaSummaryProjection;
 import org.mapstruct.Mapper;
 

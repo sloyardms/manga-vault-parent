@@ -1,10 +1,12 @@
 package com.sloyardms.mediaservice.service.interfaces;
 
+import com.sloyardms.mediaservice.dto.request.UpdateMediaRequest;
 import com.sloyardms.mediaservice.kafka.events.CreateMediaCommand;
-import com.sloyardms.mediaservice.models.Media;
+import com.sloyardms.mediaservice.entity.Media;
 import com.sloyardms.mediaservice.projection.MediaSummaryProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -37,15 +39,23 @@ public interface MediaService {
     /**
      * Updates an existing Media
      * @param id the UUID of the Media to update
-     * @param media the updated Media data
+     * @param updateMediaRequest the updated Media data
      * @return the updated Media
      */
-    Media update(UUID id, Media media);
+    Media update(UUID id, UpdateMediaRequest updateMediaRequest);
 
     /**
      * Deletes a Media by its UUID
      * @param id the UUID of the Media to delete
      */
     void delete(UUID id);
+
+    /**
+     * Updates the thumbnail of an existing media
+     * @param id the UUID of the Media to update
+     * @param file MultiPartFile with the uploaded file
+     * @return the updated Media
+     */
+    Media uploadThumbnail(UUID id, MultipartFile file);
 
 }

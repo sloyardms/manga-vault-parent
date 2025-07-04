@@ -1,6 +1,6 @@
 package com.sloyardms.mediaservice.repository;
 
-import com.sloyardms.mediaservice.models.MediaStatus;
+import com.sloyardms.mediaservice.entity.MediaStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

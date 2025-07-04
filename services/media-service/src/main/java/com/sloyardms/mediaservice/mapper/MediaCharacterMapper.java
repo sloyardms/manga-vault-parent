@@ -1,7 +1,7 @@
 package com.sloyardms.mediaservice.mapper;
 
-import com.sloyardms.mediaservice.dto.MediaCharacterResponse;
-import com.sloyardms.mediaservice.models.MediaCharacter;
+import com.sloyardms.mediaservice.dto.response.MediaCharacterResponse;
+import com.sloyardms.mediaservice.entity.MediaCharacter;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

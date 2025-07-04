@@ -1,6 +1,6 @@
 package com.sloyardms.mediaservice.controller.advice;
 
-import com.sloyardms.mediaservice.errors.ResourceNotFoundException;
+import com.sloyardms.mediaservice.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

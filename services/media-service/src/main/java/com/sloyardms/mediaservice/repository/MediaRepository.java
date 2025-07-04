@@ -1,6 +1,6 @@
 package com.sloyardms.mediaservice.repository;
 
-import com.sloyardms.mediaservice.models.Media;
+import com.sloyardms.mediaservice.entity.Media;
 import com.sloyardms.mediaservice.projection.MediaSummaryProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

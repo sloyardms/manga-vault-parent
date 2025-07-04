@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * Event emitted by media-service when Media creation fails
+ * Kafka event emitted by media-service when Media creation fails
  */
 @Data
 public class MediaCreationFailedEvent {

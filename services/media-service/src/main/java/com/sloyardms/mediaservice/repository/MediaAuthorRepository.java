@@ -1,6 +1,6 @@
 package com.sloyardms.mediaservice.repository;
 
-import com.sloyardms.mediaservice.models.MediaAuthor;
+import com.sloyardms.mediaservice.entity.MediaAuthor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

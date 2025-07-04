@@ -1,10 +1,11 @@
 package com.sloyardms.mediaservice.service.impl;
 
-import com.sloyardms.mediaservice.errors.InvalidResourceVersionException;
-import com.sloyardms.mediaservice.errors.ResourceDuplicatedException;
-import com.sloyardms.mediaservice.errors.ResourceNotFoundException;
+import com.sloyardms.mediaservice.dto.request.UpdateMediaRequest;
+import com.sloyardms.mediaservice.exception.InvalidResourceVersionException;
+import com.sloyardms.mediaservice.exception.ResourceDuplicatedException;
+import com.sloyardms.mediaservice.exception.ResourceNotFoundException;
 import com.sloyardms.mediaservice.kafka.events.CreateMediaCommand;
-import com.sloyardms.mediaservice.models.*;
+import com.sloyardms.mediaservice.entity.*;
 import com.sloyardms.mediaservice.projection.MediaSummaryProjection;
 import com.sloyardms.mediaservice.repository.*;
 import com.sloyardms.mediaservice.service.interfaces.MediaService;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -23,8 +25,8 @@ import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link MediaService} for managing Media entities.
- * This service handles creation (via kafka), retrieval, update and deletion of {@link Media},
- * along with resolution of relateds entities such as {@link MediaAlternateTitle},{@link MediaArtist},
+ * This service handles creation (via kafka), retrieval, update, and deletion of {@link Media},
+ * along with resolution of related entities such as {@link MediaAlternateTitle},{@link MediaArtist},
  * {@link MediaAuthor}, {@link MediaCharacter}, {@link MediaParody} and {@link MediaTag}
  */
 @Service
@@ -61,15 +63,15 @@ public class MediaServiceImpl implements MediaService {
      * Creates a new Media entity based on the provided {@link CreateMediaCommand}
      * <p>
      * Verifies that no other media exists with the same ID or main title to prevent duplicates.
-     * The method then delegates the creation logic to a version-specific handler based on the  command's version.
+     * The method then delegates the creation logic to a version-specific handler based on the command's version.
      * <p>
      * Currently, only version 1 is supported.
      * <p>
-     * This method is transactional and will rollback all database changes if any exception occurs.
+     * This method is transactional and will roll back all database changes if any exception occurs.
      *
      * @param createMediaCommand the command received from kafka for media creation
      * @return the created {@link Media} entity
-     * @throws ResourceDuplicatedException     if a  media with the same {@code id} or {@code mainTitle} exists
+     * @throws ResourceDuplicatedException     if a media with the same {@code id} or {@code mainTitle} exists
      * @throws InvalidResourceVersionException if the command has an unsupported version
      * @throws DataIntegrityViolationException if any database constraint is violated during persistence
      */
@@ -106,7 +108,7 @@ public class MediaServiceImpl implements MediaService {
      * @throws RuntimeException                if any unexpected error occurs during entity resolution or persistence
      */
     private Media handleMediaCreationV1(CreateMediaCommand createMediaCommand) {
-        //Create media entity and map simple properties
+        //Create a media entity and map simple properties
         Media media = new Media();
         media.setId(Optional.ofNullable(createMediaCommand.getId()).orElse(UUID.randomUUID()));
         media.setMainTitle(createMediaCommand.getMainTitle());
@@ -222,12 +224,12 @@ public class MediaServiceImpl implements MediaService {
      * Updates a {@link Media} entity. Not implemented yet.
      *
      * @param id    the UUID of the media to update.
-     * @param media the media data to update.
+     * @param updateMediaRequest the media data to update.
      * @return updated media.
      */
     @Override
-    @Transactional(readOnly = false, timeout = 30, rollbackFor = Exception.class)
-    public Media update(UUID id, Media media) {
+    @Transactional(timeout = 30, rollbackFor = Exception.class)
+    public Media update(UUID id, UpdateMediaRequest updateMediaRequest) {
         return null;
     }
 
@@ -238,7 +240,7 @@ public class MediaServiceImpl implements MediaService {
      * @throws ResourceNotFoundException if the media does not exist.
      */
     @Override
-    @Transactional(readOnly = false, timeout = 30, rollbackFor = Exception.class)
+    @Transactional(timeout = 30, rollbackFor = Exception.class)
     public void delete(UUID id) {
         Optional<MediaSummaryProjection> mediaFound = mediaRepository.findSummaryById(id);
         if (mediaFound.isPresent()) {
@@ -248,20 +250,27 @@ public class MediaServiceImpl implements MediaService {
         }
     }
 
+    @Override
+    public Media uploadThumbnail(UUID id, MultipartFile file) {
+        Media media = mediaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Media with id " + id + " not found"));
+
+        // Save the file somewhere
+        //TODO: add call to file-storage-system
+        String thumbnailPath = "null";
+
+        media.setThumbnailUrl(thumbnailPath);
+        return mediaRepository.save(media);
+    }
+
     /**
      * Finds a {@link MediaStatus} entity by name.
      *
      * @param statusName the name of the status.
      * @return the resolved MediaStatus entity.
+     * @throws ResourceNotFoundException Media status not found
      */
-    private MediaStatus resolveStatus(String statusName) {
-        //TODO: status should not be created if it doesnt exists
-        MediaStatus mediaStatus = mediaStatusRepository.findFirstByNameIgnoreCase(statusName).orElseGet(() -> {
-            MediaStatus newStatus = new MediaStatus();
-            newStatus.setName(statusName);
-            return mediaStatusRepository.save(newStatus);
-        });
-        return mediaStatus;
+    private MediaStatus resolveStatus(String statusName) throws ResourceNotFoundException {
+        return mediaStatusRepository.findFirstByNameIgnoreCase(statusName).orElseThrow(() -> new ResourceNotFoundException("Media status with name " + statusName + " not found"));
     }
 
     /**
@@ -269,14 +278,10 @@ public class MediaServiceImpl implements MediaService {
      *
      * @param mediaTypeName the name of the media type.
      * @return the resolved MediaType entity.
+     * @throws ResourceNotFoundException Media type not found
      */
-    private MediaType resolveMediaType(String mediaTypeName) {
-        MediaType mediaType = mediaTypeRepository.findFirstByNameIgnoreCase(mediaTypeName).orElseGet(() -> {
-            MediaType newType = new MediaType();
-            newType.setName(mediaTypeName);
-            return mediaTypeRepository.save(newType);
-        });
-        return mediaType;
+    private MediaType resolveMediaType(String mediaTypeName) throws ResourceNotFoundException {
+        return mediaTypeRepository.findFirstByNameIgnoreCase(mediaTypeName).orElseThrow(() -> new ResourceNotFoundException("Media type with name " + mediaTypeName + " not found"));
     }
 
     /**
@@ -286,12 +291,11 @@ public class MediaServiceImpl implements MediaService {
      * @return the resolved MediaParody entity.
      */
     private MediaParody resolveMediaParody(String mediaParodyName) {
-        MediaParody mediaParody = mediaParodyRepository.findFirstByNameIgnoreCase(mediaParodyName).orElseGet(() -> {
+        return mediaParodyRepository.findFirstByNameIgnoreCase(mediaParodyName).orElseGet(() -> {
             MediaParody newParody = new MediaParody();
             newParody.setName(mediaParodyName);
             return mediaParodyRepository.save(newParody);
         });
-        return mediaParody;
     }
 
     /**
@@ -299,14 +303,10 @@ public class MediaServiceImpl implements MediaService {
      *
      * @param mediaLanguageName the name of the language.
      * @return the resolved MediaLanguage entity.
+     * @throws ResourceNotFoundException Media language not found
      */
     private MediaLanguage resolveMediaLanguage(String mediaLanguageName) {
-        MediaLanguage mediaLanguage = mediaLanguageRepository.findFirstByNameIgnoreCase(mediaLanguageName).orElseGet(() -> {
-            MediaLanguage newLanguage = new MediaLanguage();
-            newLanguage.setName(mediaLanguageName);
-            return mediaLanguageRepository.save(newLanguage);
-        });
-        return mediaLanguage;
+        return mediaLanguageRepository.findFirstByNameIgnoreCase(mediaLanguageName).orElseThrow(() -> new ResourceNotFoundException("Media language with name " + mediaLanguageName + " not found"));
     }
 
     /**
@@ -336,7 +336,7 @@ public class MediaServiceImpl implements MediaService {
      * @param inputNames          A set of strings representing the names of the desired entities.
      * @param findExistingByNames Function to find existing entities by a list of names (repository method)
      * @param createEntity        Function that creates a new entity given its name
-     * @param saveAllEntities     Consumer that persists the list of newly created entities (repository method)
+     * @param saveAllEntities     Consumer that persists in the list of newly created entities (repository method)
      * @param nameExtractor       Function that extracts the name from an entity
      * @param <E>                 The type of the entity
      * @return A set containing both existing and newly created entities
