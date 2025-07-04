@@ -6,13 +6,15 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      httpclient:
-        connect-timeout: 5000
-        response-timeout: 20s
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          httpclient:
+            connect-timeout: 5000
+            response-timeout: 20s
     web:
       cors:
         allowed-origins: "*"
