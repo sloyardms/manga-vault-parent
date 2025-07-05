@@ -16,6 +16,7 @@
 
     <modules>
         <module>media-service</module>
+        <module>media-parser-service</module>
     </modules>
 
     <properties>
