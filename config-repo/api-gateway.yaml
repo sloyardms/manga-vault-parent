@@ -1,0 +1,41 @@
+server:
+  port: 9012
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          httpclient:
+            connect-timeout: 5000
+            response-timeout: 20s
+    web:
+      cors:
+        allowed-origins: "*"
+        allowed-methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        allowed-headers: "*"
+        allow-credentials: false
+
+eureka:
+  instance:
+    prefer-ip-address: ${EUREKA_PREFER_IP:true}
+    ip-address: ${EUREKA_IP:192.168.0.21}
+    hostname: ${GATEWAY_HOST:localhost}
+    instance-id: ${spring.application.name}:${random.value}
+    home-page-url: http://${GATEWAY_HOST:localhost}:${server.port}
+    status-page-url: http://${GATEWAY_HOST:localhost}:${server.port}/actuator/info
+    health-check-url: http://${GATEWAY_HOST:localhost}:${server.port}/actuator/health
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:9011/eureka/}
