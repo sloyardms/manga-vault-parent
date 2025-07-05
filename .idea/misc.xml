@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/services/webtoon-service/pom.xml" />
         <option value="$PROJECT_DIR$/infrastructure/eureka-server/pom.xml" />
         <option value="$PROJECT_DIR$/infrastructure/config-server/pom.xml" />
+        <option value="$PROJECT_DIR$/services/media-parser-service/pom.xml" />
       </list>
     </option>
   </component>
