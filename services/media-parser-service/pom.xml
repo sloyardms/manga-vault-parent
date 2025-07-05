@@ -13,6 +13,10 @@
     <name>media-parser-service</name>
     <description>media-parser-service</description>
 
+    <properties>
+        <media-parser-plugin-api.version>1.0.0</media-parser-plugin-api.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.kafka</groupId>
@@ -27,6 +31,11 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sloyardms</groupId>
+            <artifactId>media-parser-plugin-api</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

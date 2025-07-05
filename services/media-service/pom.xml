@@ -13,6 +13,10 @@
     <name>media-service</name>
     <description>media-service</description>
 
+    <properties>
+        <media-parser-plugin-api.version>1.0.0</media-parser-plugin-api.version>
+    </properties>
+
     <dependencies>
 
         <dependency>

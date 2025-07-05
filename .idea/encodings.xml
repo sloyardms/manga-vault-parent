@@ -9,6 +9,8 @@
     <file url="file://$PROJECT_DIR$/infrastructure/eureka-server/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/infrastructure/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/infrastructure/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/media-parser-plugin-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/media-parser-plugin-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/media-parser-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/media-parser-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/media-service/src/main/java" charset="UTF-8" />
