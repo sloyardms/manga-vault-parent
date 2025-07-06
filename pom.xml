@@ -13,6 +13,7 @@
         <module>infrastructure</module>
         <module>services</module>
         <module>media-parser-plugin-api</module>
+        <module>media-parser-plugin-json</module>
     </modules>
 
 </project>
